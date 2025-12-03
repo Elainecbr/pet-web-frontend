@@ -37,7 +37,9 @@ Este é um projeto Full Stack desenvolvido como uma Single Page Application (SPA
     para o backend
 
 
-# Frontend — Projeto Pet
+# Frontend — Projeto Pet Web
+<img width="1723" height="987" alt="image" src="https://github.com/user-attachments/assets/d25366ff-f1bf-4d46-a66b-9fd7a44722d0" />
+
 
 ### A estrutura
 
