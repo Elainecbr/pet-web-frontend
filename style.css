@@ -1,0 +1,654 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap'); 
+/* Importar uma fonte elegante do Google Fonts */
+
+/* frontend/style.css */
+/* Variáveis CSS para Cores e Propriedades Reutilizáveis (melhoram a manutenção!) */
+:root {
+    --primary-pink: #FF69B4; /* Rosa Vibrante */
+    --secondary-purple: #8A2BE2; /* Roxo Vibrante */
+    --tertiary-orange: #FFA500; /* Laranja Vibrante */
+    --neutral-gray: #CCCCCC; /* Cinza claro para bordas e detalhes */
+    --dark-gray: #333; /* Cor principal do texto e alguns fundos */
+    --white: #FFFFFF;
+    --black: #000000;
+    --light-bg: #F8F8F8; /* Fundo geral da página */
+    --form-bg: #EDEDED; /* Fundo dos formulários e painéis */
+    --text-color: #444; /* Cor de texto padrão para maior legibilidade */
+}
+
+/* ===== Fundo animado: “fogos” com bolinhas coloridas ===== */
+.fireworks{
+  position: absolute;
+  inset: 0;
+  z-index: 0;                /* fica atrás do conteúdo */
+  pointer-events: none;      /* não bloqueia cliques do jogo */
+  overflow: hidden;
+}
+
+
+/* Cada .burst é uma “explosão” feita com várias bolinhas
+   usando box-shadow em 8 direções */
+.burst{
+  --size: 6px;         /* tamanho do ponto base */
+  --spread: 70px;      /* raio da explosão */
+  /* paleta pastel  — azul, vermelho, amarelo, verde, lilás, laranja */
+  --c1:#3b82f6; --c2:#ef4444; --c3:#f59e0b; --c4:#22c55e; --c5:#a855f7; --c6:#fb923c;
+
+  position: absolute;
+  top: var(--y);
+  left: var(--x);
+  width: var(--size);
+  height: var(--size);
+  border-radius: 50%;
+  transform: translate(-50%,-50%) scale(.2);
+  opacity: 0;
+
+  /* o truque: vários pontos ao redor usando box-shadow */
+  box-shadow:
+    0 calc(-1*var(--spread)) 0 0 var(--c1),
+    calc(.5*var(--spread)) calc(-.866*var(--spread)) 0 0 var(--c2),
+    var(--spread) 0 0 0 var(--c3),
+    calc(.5*var(--spread)) calc(.866*var(--spread)) 0 0 var(--c4),
+    0 var(--spread) 0 0 var(--c5),
+    calc(-.5*var(--spread)) calc(.866*var(--spread)) 0 0 var(--c6),
+    calc(-1*var(--spread)) 0 0 0 var(--c2),
+    calc(-.5*var(--spread)) calc(-.866*var(--spread)) 0 0 var(--c3);
+
+  /* brilho suave nos pontinhos */
+  filter: drop-shadow(0 0 4px rgba(0,0,0,.15));
+
+  animation: explode 1.8s ease-out var(--delay) infinite;
+}
+
+
+/* Cada .burst agora é uma patinha “explodindo” */
+.burst {
+  position: absolute;
+  top: var(--y);
+  left: var(--x);
+
+  width: 28px;
+  height: 28px;
+
+  transform: translate(-50%, -50%) scale(0.2);
+  opacity: 0;
+
+  background-image: url("assets/icon_paw_white.png");
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position: center;
+
+  filter: drop-shadow(0 0 4px rgba(0,0,0,.25));
+  animation: explode 1.8s ease-out var(--delay) infinite;
+}
+
+/* Animação da explosão */
+@keyframes explode{
+  0%   { transform: translate(-50%,-50%) scale(.2); opacity: 0; }
+  10%  { opacity: 1; }
+  60%  { transform: translate(-50%,-50%) scale(1);   opacity: 1; }
+  100% { transform: translate(-50%,-50%) scale(1.25); opacity: 0; }
+}
+
+/* ===== FIM - Fundo animado: “fogos” com bolinhas coloridas ===== */
+
+
+
+/* Habilita rolagem suave em navegadores que suportam a propriedade */
+html {
+    scroll-behavior: smooth;
+}
+
+/* Reset básico e configurações globais para garantir consistência entre navegadores */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box; /* Garante que padding e border são incluídos na largura/altura */
+}
+
+body {
+    font-family: 'Poppins', sans-serif; /* Aplica a fonte importada */
+    line-height: 1.6; /* Espaçamento entre linhas para melhor leitura */
+    color: var(--text-color); /* Cor padrão do texto */
+    background-color: var(--light-bg); /* Fundo suave para a página */
+    display: flex;
+    flex-direction: column; /* Organiza o conteúdo em coluna (cabeçalho, main, rodapé) */
+    min-height: 100vh; /* Garante que o body ocupa no mínimo a altura da viewport */
+}
+
+.container {
+    width: 90%;
+    max-width: 1200px; /* Largura máxima para o conteúdo central */
+    margin: 20px auto; /* Centraliza o container com margem superior/inferior */
+    padding: 20px;
+    background-color: var(--white);
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1); /* Sombra sutil para um efeito 3D */
+    border-radius: 10px; /* Bordas arredondadas */
+    flex-grow: 1; /* Permite que o container principal ocupe o espaço restante */
+}
+
+/* --- Estilização do Cabeçalho Principal --- */
+.main-header {
+    background-color: var(--primary-pink); /* Cor de fundo vibrante */
+    color: var(--white);
+    padding: 20px 0;
+    text-align: center;
+    overflow: hidden; /* Garante que o conteúdo não vaze e ajuda com as bordas arredondadas */
+    border-bottom-left-radius: 20px;
+    border-bottom-right-radius: 20px;
+    position: relative; /* Para posicionar o título sobre a imagem */
+    
+     
+}
+
+#main-header {
+    position: relative;
+    overflow: hidden; /* impede o efeito de sair para fora */
+}
+
+.firework {
+    position: absolute;
+    width: 12px;
+    height: 12px;
+    background-color: rgba(255,255,255,0.9);
+    border-radius: 50%;
+    pointer-events: none;
+    animation: explode 800ms ease-out forwards;
+}
+
+@keyframes explode {
+    from {
+        transform: scale(0.1);
+        opacity: 1;
+    }
+    to {
+        transform: scale(3);
+        opacity: 0;
+    }
+}
+
+.header-content {
+    position: relative;
+    max-width: 1200px; /* Alinha com o container principal */
+    margin: 0 auto;
+}
+
+.header-image {
+    width: 100%;
+    max-height: 250px;
+    object-fit: cover; /* A imagem cobre a área sem distorcer */
+    display: block;
+    border-bottom-left-radius: 20px;
+    border-bottom-right-radius: 20px;
+}
+
+.header-title {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%); /* Centraliza o título precisamente */
+    font-size: 2.5em;
+    font-weight: 700;
+    text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.5); /* Sombra para o texto do título */
+    z-index: 10; /* Garante que o título fique sobre a imagem */
+    white-space: nowrap; /* Evita quebra de linha em telas maiores */
+}
+
+/* --- Seção de Formulários --- */
+.forms-section {
+    display: flex;
+    flex-wrap: wrap; /* Permite que os cards de formulário quebrem a linha */
+    gap: 30px; /* Espaçamento entre os cards */
+    justify-content: center; /* Centraliza os cards quando houver espaço */
+    margin-bottom: 40px;
+}
+
+.form-card {
+    background-color: var(--form-bg);
+    padding: 25px;
+    border-radius: 10px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+    flex: 1; /* Permite que os cards cresçam para preencher o espaço */
+    min-width: 300px; /* Largura mínima para os cards antes de quebrar a linha */
+}
+
+.form-card h2 {
+    color: var(--primary-pink);
+    margin-bottom: 20px;
+    font-size: 1.8em;
+    text-align: center;
+}
+
+.form-card form {
+    display: flex;
+    flex-direction: column; /* Campos do formulário empilhados */
+}
+
+.form-card label {
+    margin-bottom: 8px;
+    font-weight: 600;
+    color: var(--dark-gray);
+}
+
+.form-card input[type="text"],
+.form-card input[type="email"],
+.form-card input[type="tel"],
+.form-card input[type="number"],
+.form-card select,
+.form-card textarea {
+    padding: 12px;
+    margin-bottom: 15px;
+    border: 1px solid var(--neutral-gray);
+    border-radius: 5px;
+    font-size: 1em;
+    transition: border-color 0.3s ease; /* Transição suave na borda ao focar */
+}
+
+.form-card input:focus,
+.form-card select:focus,
+.form-card textarea:focus {
+    border-color: var(--primary-pink); /* Borda rosa ao focar */
+    outline: none; /* Remove o outline padrão do navegador */
+}
+
+.form-card button {
+    background-color: var(--primary-pink);
+    color: var(--white);
+    padding: 12px 20px;
+    border: none;
+    border-radius: 5px;
+    font-size: 1.1em;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background-color 0.3s ease, transform 0.2s ease; /* Efeito hover */
+    margin-top: 10px;
+}
+
+.form-card button:hover {
+    background-color: #e652a0; /* Rosa um pouco mais escuro */
+    transform: translateY(-2px); /* Desliza o botão para cima no hover */
+}
+
+/* Estilos para mensagens de feedback */
+.message {
+    margin-top: 15px;
+    padding: 10px;
+    border-radius: 5px;
+    text-align: center;
+    font-weight: 600;
+}
+.message.success {
+    background-color: #d4edda;
+    color: #155724;
+    border: 1px solid #c3e6cb;
+}
+.message.error {
+    background-color: #f8d7da;
+    color: #721c24;
+    border: 1px solid #f5c6cb;
+}
+.message.info {
+    background-color: #d1ecf1;
+    color: #0c5460;
+    border: 1px solid #bee5eb;
+}
+
+/* --- CTA Section (Chamada para Ação no Centro da página) --- */
+.cta-section {
+    background-color: var(--primary-pink);
+    color: var(--white);
+    padding: 40px 20px;
+    text-align: center;
+    border-radius: 10px;
+    margin: 40px 0;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+}
+
+.cta-content {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-wrap: wrap; /* Permite que o texto quebre abaixo do ícone em telas menores */
+    gap: 20px;
+    max-width: 800px;
+    margin: 0 auto;
+}
+
+.cta-icon {
+    width: 60px;
+    height: 60px;
+    filter: brightness(0) invert(1); /* Transforma o ícone para branco */
+}
+
+.cta-section h2 {
+    font-size: 2em;
+    font-weight: 600;
+    line-height: 1.3;
+}
+
+/* --- Seção de Informações (Wireframe de 2 colunas para telas maiores) --- */
+.info-section {
+    display: grid;
+    grid-template-columns: 1fr 2fr; /* Painel esquerdo (1 parte) e Painel central (2 partes) */
+    gap: 30px;
+    margin-top: 40px;
+}
+
+.left-panel {
+    background-color: var(--form-bg);
+    padding: 25px;
+    border-radius: 10px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+}
+
+.left-panel .info-box {
+    text-align: center;
+    margin-bottom: 30px;
+}
+
+.left-panel .panel-icon {
+    width: 80px;
+    height: 80px;
+    margin-bottom: 20px;
+    filter: grayscale(100%); /* Transforma o ícone da pata para cinza */
+}
+
+.left-panel p {
+    font-size: 0.95em;
+    color: var(--text-color);
+    margin-bottom: 15px;
+}
+
+.admin-buttons {
+    display: flex;
+    flex-direction: column; /* Botões empilhados */
+    gap: 15px;
+}
+
+.admin-btn {
+    padding: 12px 20px;
+    border: none;
+    border-radius: 5px;
+    font-size: 1.05em;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+    color: var(--white);
+    text-align: center;
+}
+
+.admin-btn.pink { background-color: var(--primary-pink); }
+.admin-btn.purple { background-color: var(--secondary-purple); }
+.admin-btn.gray { background-color: var(--neutral-gray); color: var(--dark-gray); } /* Botão cinza tem texto escuro */
+
+.admin-btn.pink:hover { background-color: #e652a0; transform: translateY(-2px); }
+.admin-btn.purple:hover { background-color: #7a1fd1; transform: translateY(-2px); }
+.admin-btn.gray:hover { background-color: #b0b0b0; transform: translateY(-2px); }
+
+/* Estado desabilitado para botões administrativos */
+.admin-btn:disabled,
+.admin-btn.disabled {
+    background-color: #e0e0e0 !important;
+    color: #777 !important;
+    cursor: not-allowed;
+    transform: none !important;
+    opacity: 0.8;
+}
+
+/* Painel admin com transição suave */
+.admin-panel {
+    transition: max-height 0.35s ease, opacity 0.35s ease;
+    overflow: hidden;
+    max-height: 1200px; /* grande o suficiente quando visível */
+    opacity: 1;
+}
+.admin-panel.hidden {
+    max-height: 0;
+    opacity: 0;
+}
+
+/* Estilos para os botões de ação no formulário do pet */
+#pet-admin-actions button,
+#user-admin-actions button {
+    padding: 8px 12px;
+    border-radius: 6px;
+    border: none;
+    font-weight: 600;
+    cursor: pointer;
+    margin-right: 6px;
+}
+/****************************/
+.pet-form-card #admin-panel {
+    margin-top: 20px;
+    padding: 15px;
+    background: white;
+    border-radius: 8px;
+    box-shadow: 0px 2px 6px rgba(0,0,0,0.1);
+}
+/****************************/
+#pet-admin-actions #pet-update-btn { background-color: var(--secondary-purple); color: white; }
+#pet-admin-actions #pet-delete-btn { background-color: #c0392b; color: white; }
+#user-admin-actions #user-update-btn { background-color: var(--primary-pink); color: white; }
+#user-admin-actions #user-delete-btn { background-color: #c0392b; color: white; }
+
+
+
+.center-panel {
+    display: flex;
+    flex-direction: column; /* Conteúdo do painel central empilhado */
+    gap: 30px;
+}
+
+.dog-display {
+    background-color: var(--form-bg);
+    padding: 25px;
+    border-radius: 10px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+    text-align: center;
+}
+
+.breed-image {
+    max-width: 100%;
+    height: 200px; /* Altura fixa para as imagens das raças */
+    object-fit: contain; /* Garante que a imagem se ajuste sem cortar ou distorcer */
+    border-radius: 8px;
+    margin-bottom: 15px;
+    border: 1px solid var(--neutral-gray);
+    transition: transform 0.45s cubic-bezier(.2,.8,.2,1), box-shadow 0.35s ease; /* Suaviza troca de imagem */
+}
+
+.dog-display h3 {
+    font-size: 2em;
+    color: var(--primary-pink);
+    margin-bottom: 10px;
+}
+
+.dog-display p {
+    font-size: 0.95em;
+    color: var(--text-color);
+}
+
+.info-cards {
+    display: flex;
+    flex-wrap: wrap; /* Permite que os cards quebrem a linha */
+    gap: 20px; /* Espaçamento entre os cards */
+    justify-content: center; /* Centraliza os cards */
+}
+
+.card {
+    flex: 1; /* Permite que os cards se adaptem na largura */
+    min-width: 250px; /* Largura mínima para cada card */
+    padding: 25px;
+    border-radius: 10px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.08);
+    color: var(--white);
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    transition: transform 0.3s ease; /* Efeito suave no hover */
+}
+
+.card:hover {
+    transform: translateY(-5px); /* Desliza o card para cima no hover */
+}
+
+/* Pequenas transições para painéis e mudanças de conteúdo */
+.dog-display,
+.form-card,
+.left-panel,
+.admin-panel {
+    transition: box-shadow 0.25s ease, transform 0.25s ease, opacity 0.25s ease;
+}
+
+.card.pink-card { background-color: var(--primary-pink); }
+.card.purple-card { background-color: var(--secondary-purple); }
+.card.orange-card { background-color: var(--tertiary-orange); }
+
+.card-icon {
+    width: 50px;
+    height: 50px;
+    margin-bottom: 15px;
+    filter: brightness(0) invert(1); /* Transforma o ícone para branco */
+}
+
+.card h3 {
+    font-size: 1.3em;
+    margin-bottom: 10px;
+    font-weight: 700;
+}
+
+.card p {
+    font-size: 0.9em;
+    line-height: 1.5;
+}
+
+/* --- Rodapé Principal --- */
+.main-footer {
+    background-color: var(--dark-gray);
+    color: var(--white);
+    padding: 20px;
+    text-align: center;
+    margin-top: 40px;
+    border-top-left-radius: 20px;
+    border-top-right-radius: 20px;
+    position: relative; /* Para posicionar a imagem do rodapé */
+}
+
+.main-footer .footer-image {
+    position: absolute;
+    bottom: 0;
+    right: 20px;
+    max-height: 100px;
+    overflow: hidden;
+    border-top-right-radius: 20px;
+}
+
+.main-footer .footer-image img {
+    height: 120px; /* Ajuste para encaixar a imagem de cachorro */
+    width: auto;
+    object-fit: cover;
+    display: block;
+}
+
+/* Estilo para o botão "Voltar ao Topo" */
+.scroll-to-top {
+    position: fixed; /* Fixa o botão na tela */
+    bottom: 20px;
+    right: 20px;
+    background-color: var(--primary-pink);
+    color: var(--white);
+    border: none;
+    border-radius: 50%; /* Botão redondo */
+    width: 50px;
+    height: 50px;
+    font-size: 1.5em;
+    cursor: pointer;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+    z-index: 1000;
+    display: none; /* Escondido por padrão, JavaScript o mostrará */
+    transition: background-color 0.3s ease;
+}
+
+.scroll-to-top:hover {
+    background-color: #e652a0;
+}
+
+/* --- Responsividade: Adaptando o Layout para Diferentes Telas --- */
+@media (max-width: 992px) { /* Para tablets e telas médias */
+    .header-title {
+        font-size: 1.8em;
+    }
+    .forms-section {
+        flex-direction: column; /* Formulários um abaixo do outro */
+        align-items: center; /* Centraliza os formulários */
+    }
+    .form-card {
+        width: 100%;
+        max-width: 500px; /* Limita a largura dos formulários */
+    }
+    .info-section {
+        grid-template-columns: 1fr; /* Layout de uma única coluna */
+    }
+    .left-panel {
+        order: 2; /* Move o painel esquerdo para baixo, após o painel central */
+    }
+    .center-panel {
+        order: 1; /* Mantém o painel central no topo */
+    }
+    .info-cards {
+        flex-direction: column; /* Cards empilhados */
+        align-items: center;
+    }
+    .card {
+        width: 90%;
+        max-width: 400px; /* Limita a largura dos cards */
+    }
+    .cta-section h2 {
+        font-size: 1.5em;
+    }
+    .main-footer .footer-image {
+        display: none; /* Esconde a imagem do rodapé em telas menores */
+    }
+}
+
+@media (max-width: 576px) { /* Para celulares */
+    .main-header {
+        padding: 15px 0;
+    }
+    .header-title {
+        font-size: 1.4em;
+        position: static; /* Remove o posicionamento absoluto para que o título fique abaixo da imagem */
+        transform: none;
+        margin-top: 10px;
+        white-space: normal; /* Permite quebra de linha para títulos longos */
+    }
+    .header-image {
+        max-height: 150px;
+    }
+    .container {
+        padding: 15px;
+        width: 95%; /* Ocupa quase toda a largura em celulares */
+    }
+    .form-card h2 {
+        font-size: 1.5em;
+    }
+    .cta-section {
+        padding: 25px 15px;
+    }
+    .cta-section h2 {
+        font-size: 1.2em;
+    }
+    .dog-display h3 {
+        font-size: 1.5em;
+    }
+    .card h3 {
+        font-size: 1.1em;
+    }
+    .scroll-to-top {
+        width: 40px;
+        height: 40px;
+        font-size: 1.2em;
+    }
+}

@@ -1,0 +1,15 @@
+# IDE
+.vscode/
+.idea/
+*.swp
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+
+# Node (se usar npm futuramente)
+node_modules/
+package-lock.json

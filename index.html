@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pet Web: Cuidado e Carinho para Seu Melhor Amigo</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="icon" href="assets/icon_dog_heart.png"> <!-- Ícone da aba do navegador -->
+</head>
+<body>
+       
+    <header class="main-header">
+
+        <div class="header-content">
+              <!-- Fundo animado tipo fogos (não interfere em cliques) -->
+   <div class="fireworks" aria-hidden="false">
+    <!-- se pode ajustar as posições (x,y) e delays -->
+    <span class="burst" style="--x:18%; --y:28%; --delay:0s;"></span>
+    <span class="burst" style="--x:72%; --y:24%; --delay:.6s;"></span>
+    <span class="burst" style="--x:50%; --y:14%; --delay:1.1s;"></span>
+    <span class="burst" style="--x:30%; --y:70%; --delay:1.7s;"></span>
+    <span class="burst" style="--x:80%; --y:68%; --delay:2.2s;"></span>
+    <span class="burst" style="--x:12%; --y:85%; --delay:2.8s;"></span>
+
+   </div> 
+                
+            <!-- Imagem do wireframe para o cabeçalho -->
+            <img src="assets/dogs_header.png" alt="Vários cachorros felizes" class="header-image">
+            <h1 class="header-title">🐾   Pet Web: Cuidado e Carinho para Seu Melhor Amigo  🐾 </h1>  
+               
+                  
+        </div>
+        
+  
+    </header>
+
+    <main class="container">
+        <!-- Seção de Formulários: Usuário e Pet -->
+        <section class="forms-section">
+            <!-- Card de Formulário de Usuário -->
+            <div class="form-card user-form-card">
+                <h2>Suas Informações</h2>
+                <form id="user-form">
+                    <label for="nome-completo">Nome completo:</label>
+                    <input type="text" id="nome-completo" name="nome_completo" placeholder="João da Silva" required>
+
+                    <label for="email-usuario">E-mail:</label>
+                    <input type="email" id="email-usuario" name="email" placeholder="joaodasilva@example.com" required>
+
+                    <label for="telefone-usuario">Telefone:</label>
+                    <input type="tel" id="telefone-usuario" name="telefone" placeholder="(XX) XXXXX-XXXX">
+                    
+                    <button type="submit">Verificar / Cadastrar</button>
+                    <p id="user-message" class="message"></p>
+                    <!-- Texto introdutório solicitado -->
+                    <p class="user-instruction">Bem-vindo tutor! Coloque seus dados: se você já for cadastrado, será feito o login; em seguida registre os dados do seu Doguinho 🐶. Se o nome, raça e idade já estiverem cadastrados, será considerado o login do seu pet.</p>
+                    <!-- Botão de logout (esconde dados e reseta formulários) -->
+                    <button type="button" id="logout-button" class="logout-btn" style="display:none; margin-top:8px;">Sair / Logout</button>
+                </form>
+                
+                
+                <!-- Adm dos tutores -->
+                <div class="user-admin-area" style="margin-top:18px;">
+    				<h3 style="margin-bottom:8px;">Gerenciar Tutores</h3>
+    				<p style="font-size:0.9em; margin-bottom:10px;">
+      				  Clique em "Tutores - Adm" para listar todos os tutores cadastrados.
+      				  Use os botões Visualizar, Editar e Deletar logo abaixo.
+   					 </p>
+
+   						 <div class="admin-buttons">
+       						 <button class="admin-btn purple">Tutores - Adm</button>
+    					 </div>
+
+    					<div id="user-admin-panel" class="admin-panel" style="margin-top:12px;">
+    					</div>
+				</div>
+            </div>
+
+            <!-- Card de Formulário de Pet -->
+            <div class="form-card pet-form-card">
+                <h2>Informações do Pet</h2>
+                <form id="pet-form">
+                    <label for="nome-pet">Nome do Pet:</label>
+                    <input type="text" id="nome-pet" name="nome_pet" placeholder="Nome do seu cãozinho" required>
+
+                    <label for="raca-pet">Raça do Pet:</label>
+                    <select id="raca-pet" name="raca_id" required>
+                        <option value="">Selecione a raça</option>
+                        <!-- As raças serão carregadas dinamicamente aqui via JavaScript -->
+                    </select>
+
+                    <label for="idade-pet">Idade (anos):</label>
+                    <input type="number" id="idade-pet" name="idade" min="0" placeholder="Ex: 3">
+
+                    <label for="peso-pet">Peso (kg):</label>
+                    <input type="number" id="peso-pet" name="peso" step="0.1" min="0" placeholder="Ex: 15.5">
+
+                    <label for="info-extra">Informações adicionais:</label>
+                    <textarea id="info-extra" name="info_extra" rows="3" placeholder="Comportamento, alergias, medicações, etc."></textarea>
+                    
+                    <button type="submit">Registrar Pet</button>
+                    <p id="pet-message" class="message"></p>
+                </form>
+                
+                <!--  NOVO BLOCO: Admin de Cães dentro do card do Pet -->
+    <div class="pet-admin-area" style="margin-top:18px;">
+        <h3 style="margin-bottom:8px;">Gerenciar Cachorros</h3>
+        <p style="font-size:0.9em; margin-bottom:10px;">
+            Clique em "Seu Cão - Adm" para listar os cães cadastrados para este tutor.
+            Use os botões Visualizar, Editar e Deletar logo abaixo.
+        </p>
+
+        <div class="admin-buttons">
+            <!--  cães -->
+            <button class="admin-btn pink">Seu Cão - Adm</button>
+            
+            <!-- -----" -->
+        </div>
+                 <!--  painel específico de cães -->
+        <div id="dog-admin-panel" class="admin-panel" style="margin-top:12px;"></div>
+
+            </div>
+        </section>
+
+        <!-- Seção de Chamada para Ação (CTA) -->
+        <!--
+            Seção CTA (Call To Action)
+            - `id="rolagem1"` é a âncora usada para scroll suave após registro de pet
+            - Esta seção destaca a ação principal da página: cadastrar o tutor e registrar o pet
+        -->
+        <section id="rolagem1" class="cta-section">
+            <div class="cta-content">
+                <!-- Ícone de pata rosa -->
+               <img src="assets/icondog4.svg" alt="Cãozinho e coracao rosa" class="cta-icon">
+                <!-- Texto chamativo para orientar o usuário -->
+                <h3>Cadastre-se e depois registre seu Pet para ver informações e cuidados personalizados!</h3>
+            </div>
+        </section>
+
+        <!-- Seção Principal de Informações (Wireframe de 3 colunas lógicas) -->
+        <section class="info-section">
+            
+            <!-- Painel Esquerdo (Informações e Botões Admin) -->
+            <div class="left-panel">
+                <div class="info-box">
+                    <!-- Ícone de pata cinza -->
+                    <img src="assets/icon_paw_gray.png" alt="Pata de cachorro cinza" class="panel-icon">
+                    <p>Aqui, Caro Tutor, aparecerão todas as informações detalhadas, recolhidas da nossa API, sobre a raça que você escolher no *dropdown* ou cadastrar. Você verá o porte, o grupo, e principalmente os cuidados específicos, o comportamento típico e a ração mais indicada. Um verdadeiro guia personalizado para cada doguinho!</p>
+                    <p>No futuro,  expandiremos essa seção para incluir produtos recomendados, criando possibilidades de monetização!</p>
+                </div>
+                
+                
+                <!--  aqui ficava -------  Painel administrativo separado em bloco inferior -->
+               
+
+<!------------------------------------------------------->                        
+                    </div>
+                </div>
+            </div>
+
+            <!-- Painel Central (Exibição da Raça e Cards de Detalhes) -->
+            <div class="center-panel">
+                <div class="dog-display">
+                    <!-- Imagem da raça do cachorro -->
+                    <img id="breed-image" src="assets/default_dog.png" alt="Imagem da raça do cachorro" class="breed-image">
+                    <h3 id="breed-name">Selecione uma Raça</h3>
+                    <p id="breed-description">Aqui aparecerá a foto respectiva à raça selecionada e uma breve descrição sobre seu porte e grupo. Se a raça não for encontrada, uma mensagem de alerta será exibida.</p>
+                </div>
+                <div class="info-cards">
+                    <!-- Card de Cuidados -->
+                    <div class="card pink-card">
+                        <!-- Ícone de coração com cachorro -->
+                        <img src="assets/iconpata2bcp.png" alt="Ícone de coração com cachorro" class="card-icon">
+                        <h3>CUIDADO DO CÃO</h3>
+                        <p id="card-cuidados">Selecione uma raça para ver detalhes de cuidados.</p>
+                    </div>
+                    <!-- Card de Comportamento -->
+                    <div class="card purple-card">
+                        <!-- Ícone de lobo -->
+                        <img src="assets/auau1.png" alt="Ícone de lobo" class="card-icon">
+                        <h3>COMPORTAMENTO</h3>
+                        <p id="card-comportamento">Selecione uma raça para ver o comportamento esperado.</p>
+                    </div>
+                    <!-- Card de Ração -->
+                    <div class="card orange-card">
+                        <!-- Ícone de tigela de ração -->
+                        <img src="assets/icondog4.svg" alt="Ícone de tigela de ração" class="card-icon">
+                        <h3>RAÇÃO PARA ANIMAIS</h3>
+                        <p id="card-racao">Selecione uma raça para ver a recomendação de ração.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer class="main-footer">
+        <p>&copy; 2023 Pet Web. Todos os direitos reservados.</p>
+        <div class="footer-image">
+            <!-- Imagem do wireframe para o rodapé -->
+            <img src="assets/wireframe_images/dog_bottom_right.jpg" alt="Cachorro fofo">
+            <img src="assets/wireframe_images/dog_bottom_right.jpg" alt="Cachorro fofo">
+            <img src="assets/wireframe_images/dog_bottom_right.jpg" alt="Cachorro fofo">
+        </div>
+        <!-- Botão para rolar para o topo -->
+        <button class="scroll-to-top" onclick="window.scrollTo({top: 0, behavior: 'smooth'});">▲</button>
+    </footer>
+
+    <!-- Nosso arquivo JavaScript sempre no final do body para garantir que o HTML já foi carregado -->
+    <script src="script.js"></script>
+    
+</body>
+</html>
