@@ -9,7 +9,7 @@ Bem-vindo ao Pet Web! Este sistema permite que você cadastre suas informações
 > <span style="color:  #9543f9;"> 🥣 Rações,</span> <span style="color:magenta;"> 🧴 Produtos de Cuidados para o seu cão</span>, <span style="color:#70CC87;"> 🩺Veterinários na sua região,</span> <span style="color:#8A4C57">Forum - 📖 Dog-Book - para encontrar outros tutores que queiram socializar</span> e muito mais. 
 
 # Frontend — Projeto Pet 
-Este diretório contém a Single Page Application (HTML/CSS/JS) do Projeto Pet.
+Este diretório contém a Single Page Application (HTML/CSS/JS) do Projeto Pet Web.
 
 # Explicando o projeto
 ## Pet Web - Full Stack SPA Project
