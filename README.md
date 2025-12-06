@@ -60,7 +60,7 @@ pet-web-frontend/
 
 ## Como usar localmente
 
-1. Para visualiza a página no diretório `projeto_pet_web/frontend` abra  `index.html` no navegador (duplo clique ou `open` no macOS).Será aberto localmente, com os estilos, e JavaScript
+1. Para visualiza a página no diretório `projeto_pet_web/frontend` (se ffoi baixado como .zip o diretório poderá ser pet-web-backend-main) abra  `index.html` no navegador (duplo clique ou `open` no macOS).Será aberto localmente, com os estilos, e JavaScript
 2. Para usar o frontend com o API, o Frontend faz chamadas à API no backend em `http://127.0.0.1:5000`. Coloque no Navegador  esse enereço `http://127.0.0.1:5000`
 
 
