@@ -19,7 +19,7 @@ Este diretório contém a Single Page Application (HTML/CSS/JS) do Projeto Pet W
 
 Este é um projeto Full Stack desenvolvido como uma Single Page Application (SPA) para o "Pet Web", com desenho com aproximação conforme o wireframe gráfico. O objetivo é demonstrar a integração de um backend em Python (Flask) com um frontend interativo (HTML, CSS, JavaScript), utilizando Pydantic para validação de dados e Flask-OpenAPI3 para documentação de API (Swagger UI).
 
-[ Link: O Wireframe gráfico simila a página](https://github.com/user-attachments/assets/222aa8f9-9262-4d1f-ad27-a35acae0f414)
+[ Link: O Wireframe gráfico similar -primeiro protótipo- a página](https://github.com/user-attachments/assets/222aa8f9-9262-4d1f-ad27-a35acae0f414)
 
 ## Backend:
 
