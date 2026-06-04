@@ -17,8 +17,6 @@ Dieses System ermöglicht es Benutzerinnen und Benutzern, ihre eigenen Informati
 Nach der Registrierung oder Anmeldung werden die eingegebenen Informationen in Karten unterhalb des Formulars angezeigt. Neben dem Registrieren und Anzeigen der Daten ist es auch möglich, die Informationen zu bearbeiten oder zu löschen.
 
 
-
-
 # ⚙️ Futuramente, poderá ser escolhido: 
 
 > <span style="color:  #9543f9;"> 🥣 Diferentes tipos de Rações,</span> <span style="color:magenta;"> 🧴 Produtos de Cuidados para o seu cão</span>, <span style="color:#70CC87;"> 🩺 Veterinários na sua região,</span> <span style="color:#8A4C57">Forum - 📖 Dog-Book - para encontrar outros tutores que queiram socializar</span> e muito mais.
@@ -35,7 +33,7 @@ Este é um projeto Full Stack desenvolvido como uma Single Page Application (SPA
 
 [ Link: O Wireframe gráfico similar -primeiro protótipo- a página](https://github.com/user-attachments/assets/222aa8f9-9262-4d1f-ad27-a35acae0f414)
 
-## Backend:
+## Backend: https://github.com/Elainecbr/pet-web-backend
 
     Python3
     Flask: Microframework web
