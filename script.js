@@ -801,4 +801,3 @@ function syncSaudeRacaFromPet() {
     const selectedValue = racaSelectPet.value;
     if (selectedValue) saudeSelect.value = selectedValue;
 }
-});
