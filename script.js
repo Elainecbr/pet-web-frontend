@@ -123,6 +123,8 @@ async function loadRacas() {
             option.textContent = raca.nome;
             racaSelect.appendChild(option);
         });
+        // Sincroniza o select de raça na seção de saúde
+        populateSaudeRacaSelect(racas);
     } catch (error) {
         console.error("Erro ao carregar raças:", error);
         displayMessage(petMessage, 'Não foi possível carregar as raças. Tente novamente mais tarde.', 'error');
@@ -146,7 +148,7 @@ async function displayBreedInfo(racaNome) {
         if (!response.ok) throw new Error(`Erro HTTP: ${response.status}`);
         const raca = await response.json();
 
-        breedImage.src = `assets/${raca.imagem || 'default_dog.png'}`;
+    breedImage.src = raca.imagem_api || `assets/${raca.imagem || 'default_dog.png'}`;
         breedNameDisplay.textContent = raca.nome;
         breedDescriptionDisplay.textContent =
             `O(a) ${raca.nome} é um cão de porte ${raca.porte} e pertence ao grupo ${raca.grupo}. ${raca.comportamento.split(';')[0]}.`;
@@ -692,4 +694,109 @@ adminButtons.forEach(btn => {
             displayMessage(userMessage, `${text} ainda não implementado.`, 'info');
         }
     });
+});
+
+// =============================================================================
+// SEÇÃO DE SAÚDE — consulta de sintomas
+// =============================================================================
+
+/**
+ * Preenche o select de raças da seção de saúde com as mesmas raças do formulário
+ * de pet. É chamado após loadRacas() ter populado o select principal.
+ */
+function populateSaudeRacaSelect(racas) {
+    const saudeSelect = document.getElementById('saude-raca-select');
+    if (!saudeSelect) return;
+    racas.forEach(raca => {
+        const opt = document.createElement('option');
+        opt.value = raca.id;
+        opt.textContent = raca.nome;
+        saudeSelect.appendChild(opt);
+    });
+}
+
+/**
+ * Envia os sintomas para a rota POST /saude/sintomas e exibe a resposta.
+ */
+async function consultarSaude() {
+    const sintomas = document.getElementById('sintomas-input').value.trim();
+    const racaId   = document.getElementById('saude-raca-select').value;
+    const btn      = document.getElementById('btn-consultar-saude');
+    const respostaDiv = document.getElementById('saude-resposta');
+
+    if (!sintomas) {
+        alert('Por favor, descreva os sintomas do seu pet antes de consultar.');
+        return;
+    }
+
+    btn.disabled = true;
+    btn.textContent = '⏳ Consultando...';
+
+    try {
+        const payload = { sintomas };
+        if (racaId) payload.raca_id = parseInt(racaId);
+
+        const resp = await fetch(`${API_BASE_URL}/saude/sintomas`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(payload)
+        });
+
+        const data = await resp.json();
+
+        // --- Preenche alerta ---
+        const alertaEl = document.getElementById('saude-alerta');
+        alertaEl.textContent = data.alerta || '';
+        alertaEl.className = 'saude-alerta';
+        if (data.nivel === 'urgente')    alertaEl.classList.add('saude-alerta--urgente');
+        else if (data.nivel === 'atenção' || data.nivel === 'atencao')
+                                          alertaEl.classList.add('saude-alerta--atencao');
+        else                              alertaEl.classList.add('saude-alerta--info');
+
+        // --- Preenche lista de recomendações ---
+        const lista = document.getElementById('saude-lista-recomendacoes');
+        lista.innerHTML = '';
+        (data.recomendacoes || []).forEach(rec => {
+            const li = document.createElement('li');
+            li.textContent = rec;
+            lista.appendChild(li);
+        });
+
+        // --- Mostra card de raça se retornado ---
+        const cardRacaEl = document.getElementById('saude-card-raca');
+        const cuidadosEl = document.getElementById('saude-cuidados-raca');
+        if (data.raca && data.cuidados_da_raca) {
+            cardRacaEl.style.display = 'block';
+            cuidadosEl.textContent   = `${data.raca}: ${data.cuidados_da_raca}`;
+        } else {
+            cardRacaEl.style.display = 'none';
+        }
+
+        // Exibe o bloco de resposta e rola até ele
+        respostaDiv.style.display = 'block';
+        respostaDiv.scrollIntoView({ behavior: 'smooth', block: 'start' });
+
+    } catch (err) {
+        console.error('Erro na consulta de saúde:', err);
+        alert('Não foi possível conectar ao servidor. Verifique se o backend está rodando.');
+    } finally {
+        btn.disabled = false;
+        btn.textContent = '🔍 Consultar Recomendações';
+    }
+}
+
+// Conecta o botão de consulta de saúde
+const btnConsultarSaude = document.getElementById('btn-consultar-saude');
+if (btnConsultarSaude) {
+    btnConsultarSaude.addEventListener('click', consultarSaude);
+}
+
+// Pré-seleciona a raça do pet cadastrado na seção de saúde quando o usuário faz login
+function syncSaudeRacaFromPet() {
+    const racaSelectPet  = document.getElementById('raca-pet');
+    const saudeSelect    = document.getElementById('saude-raca-select');
+    if (!racaSelectPet || !saudeSelect) return;
+    const selectedValue = racaSelectPet.value;
+    if (selectedValue) saudeSelect.value = selectedValue;
+}
 });

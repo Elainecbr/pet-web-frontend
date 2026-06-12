@@ -193,6 +193,67 @@
         </section>
     </main>
 
+    <!-- ================================================================ -->
+    <!-- SEÇÃO DE SAÚDE: Campo de sintomas + resposta com recomendações  -->
+    <!-- ================================================================ -->
+    <section class="saude-section" id="saude-section">
+        <div class="saude-container">
+            <div class="saude-header">
+                <img src="assets/icon_paw_gray.png" alt="Pata" class="saude-icon">
+                <h2>🩺 Consulta de Saúde do Pet</h2>
+                <p class="saude-intro">
+                    Descreva os sintomas do seu cão e receba orientações e recomendações de cuidados.
+                    <strong>Atenção:</strong> este recurso é informativo e não substitui a consulta veterinária.
+                </p>
+            </div>
+
+            <div class="saude-form-area">
+                <!-- Campo de sintomas -->
+                <label for="sintomas-input" class="saude-label">
+                    🐾 Descreva os sintomas do seu pet:
+                </label>
+                <textarea
+                    id="sintomas-input"
+                    class="saude-textarea"
+                    rows="4"
+                    placeholder="Ex: meu cão está letárgico, vomitou duas vezes e não quer comer..."
+                ></textarea>
+
+                <!-- Raça (opcional, pré-preenchida se o pet estiver cadastrado) -->
+                <label for="saude-raca-select" class="saude-label">
+                    🐶 Raça do seu pet (opcional — melhora as recomendações):
+                </label>
+                <select id="saude-raca-select" class="saude-select">
+                    <option value="">Selecione a raça (opcional)</option>
+                </select>
+
+                <button id="btn-consultar-saude" class="saude-btn">
+                    🔍 Consultar Recomendações
+                </button>
+            </div>
+
+            <!-- Área de resposta (oculta até receber a consulta) -->
+            <div id="saude-resposta" class="saude-resposta" style="display:none;">
+                <div id="saude-alerta" class="saude-alerta"></div>
+
+                <div class="saude-resposta-grid">
+                    <div class="saude-card">
+                        <h3>📋 Recomendações</h3>
+                        <ul id="saude-lista-recomendacoes"></ul>
+                    </div>
+                    <div id="saude-card-raca" class="saude-card" style="display:none;">
+                        <h3>🐕 Cuidados da Raça</h3>
+                        <p id="saude-cuidados-raca"></p>
+                    </div>
+                </div>
+
+                <p class="saude-aviso">
+                    ⚠️ Este resultado é orientativo. Sempre consulte um médico-veterinário para diagnóstico e tratamento.
+                </p>
+            </div>
+        </div>
+    </section>
+
     <footer class="main-footer">
         <p>&copy; 2023 Pet Web. Todos os direitos reservados.</p>
         <div class="footer-image">
