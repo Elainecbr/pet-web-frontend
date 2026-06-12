@@ -1,6 +1,8 @@
 // frontend/script.js
-// URL base do nosso Backend (onde o servidor Flask está rodando)
-const API_BASE_URL = 'http://127.0.0.1:5000'; 
+// URL base do backend — autodetecta local vs produção Render
+const API_BASE_URL = ['localhost', '127.0.0.1'].includes(window.location.hostname)
+    ? 'http://127.0.0.1:5000'
+    : 'https://pet-web-backend.onrender.com';
 
 
 /*
