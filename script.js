@@ -188,17 +188,26 @@ userForm.addEventListener('submit', async (event) => {
 
     const nomeCompleto = document.getElementById('nome-completo').value.trim();
     const email        = document.getElementById('email-usuario').value.trim();
+    const senha        = document.getElementById('senha-usuario').value.trim();
     const telefone     = document.getElementById('telefone-usuario').value.trim();
 
-    if (!nomeCompleto || !email) {
-        displayMessage(userMessage, 'Nome completo e e-mail são obrigatórios.', 'error');
+    if (!nomeCompleto || !email || !senha) {
+        displayMessage(userMessage, 'Nome de usuário, e-mail e senha são obrigatórios.', 'error');
         return;
     }
 
     try {
-        console.debug('Checking user by email:', email);
-        const checkUserResponse = await fetch(`${API_BASE_URL}/usuarios/email/${email}`);
-        console.debug('checkUserResponse status:', checkUserResponse.status);
+        console.debug('Trying login by auth endpoint:', email);
+        const checkUserResponse = await fetch(`${API_BASE_URL}/auth/login`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                nome_completo: nomeCompleto,
+                email: email,
+                senha: senha
+            })
+        });
+        console.debug('auth login status:', checkUserResponse.status);
 
         if (checkUserResponse.ok) {
             const existingUser = await checkUserResponse.json();
@@ -224,6 +233,7 @@ userForm.addEventListener('submit', async (event) => {
                 body: JSON.stringify({
                     nome_completo: nomeCompleto,
                     email: email,
+                    senha: senha,
                     telefone: telefone
                 })
             });
@@ -626,6 +636,7 @@ function populateUserForm(user) {
     console.debug('populateUserForm called for user id=', user.id);
     document.getElementById('nome-completo').value   = user.nome_completo || '';
     document.getElementById('email-usuario').value   = user.email || '';
+    document.getElementById('senha-usuario').value   = '';
     document.getElementById('telefone-usuario').value= user.telefone || '';
 
     currentUserId = user.id;
@@ -654,11 +665,15 @@ function showUserAdminActions(userId) {
 
     document.getElementById('user-update-btn').addEventListener('click', async (e) => {
         e.preventDefault();
+        const senha = document.getElementById('senha-usuario').value.trim();
         const payload = {
             nome_completo: document.getElementById('nome-completo').value.trim(),
             email:        document.getElementById('email-usuario').value.trim(),
             telefone:     document.getElementById('telefone-usuario').value.trim()
         };
+        if (senha) {
+            payload.senha = senha;
+        }
         const resp = await fetch(`${API_BASE_URL}/usuarios/${userId}`, {
             method: 'PUT',
             headers: {'Content-Type':'application/json'},
