@@ -48,6 +48,14 @@ let currentUserId = null;
 
 console.debug('adminButtons found:', adminButtons.length);
 
+function authHeaders(extra = {}) {
+    const headers = { ...extra };
+    if (currentUserId) {
+        headers['X-User-Id'] = String(currentUserId);
+    }
+    return headers;
+}
+
 /**
  * Busca os cachorros do usuário atual e, se existir ao menos um,
  * preenche o painel com os dados do primeiro.
@@ -55,7 +63,9 @@ console.debug('adminButtons found:', adminButtons.length);
 async function loadUserDogs() {
     if (!currentUserId) return;
     try {
-        const resp = await fetch(`${API_BASE_URL}/usuarios/${currentUserId}/cachorros`);
+        const resp = await fetch(`${API_BASE_URL}/usuarios/${currentUserId}/cachorros`, {
+            headers: authHeaders()
+        });
         if (!resp.ok) return;
         const dogs = await resp.json();
         if (dogs && dogs.length > 0) {
@@ -188,17 +198,26 @@ userForm.addEventListener('submit', async (event) => {
 
     const nomeCompleto = document.getElementById('nome-completo').value.trim();
     const email        = document.getElementById('email-usuario').value.trim();
+    const senha        = document.getElementById('senha-usuario').value.trim();
     const telefone     = document.getElementById('telefone-usuario').value.trim();
 
-    if (!nomeCompleto || !email) {
-        displayMessage(userMessage, 'Nome completo e e-mail são obrigatórios.', 'error');
+    if (!nomeCompleto || !email || !senha) {
+        displayMessage(userMessage, 'Nome de usuário, e-mail e senha são obrigatórios.', 'error');
         return;
     }
 
     try {
-        console.debug('Checking user by email:', email);
-        const checkUserResponse = await fetch(`${API_BASE_URL}/usuarios/email/${email}`);
-        console.debug('checkUserResponse status:', checkUserResponse.status);
+        console.debug('Trying login by auth endpoint:', email);
+        const checkUserResponse = await fetch(`${API_BASE_URL}/auth/login`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                nome_completo: nomeCompleto,
+                email: email,
+                senha: senha
+            })
+        });
+        console.debug('auth login status:', checkUserResponse.status);
 
         if (checkUserResponse.ok) {
             const existingUser = await checkUserResponse.json();
@@ -224,6 +243,7 @@ userForm.addEventListener('submit', async (event) => {
                 body: JSON.stringify({
                     nome_completo: nomeCompleto,
                     email: email,
+                    senha: senha,
                     telefone: telefone
                 })
             });
@@ -284,7 +304,7 @@ petForm.addEventListener('submit', async (event) => {
         console.debug('Creating cachorro payload:', { nomePet, racaId, idade, peso, infoExtra, user_id: currentUserId });
         const response = await fetch(`${API_BASE_URL}/cachorros`, {
             method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
+            headers: authHeaders({ 'Content-Type': 'application/json' }),
             body: JSON.stringify({
                 nome_pet: nomePet,
                 raca_id: parseInt(racaId),
@@ -354,6 +374,8 @@ function resetToDefault() {
     userForm.querySelector('button[type="submit"]').style.display = 'inline-block';
     userForm.querySelectorAll('input, select, textarea').forEach(el => { el.disabled = false; });
     userForm.reset();
+    const senhaInput = document.getElementById('senha-usuario');
+    if (senhaInput) senhaInput.required = true;
 
     petForm.reset();
 
@@ -401,7 +423,9 @@ async function showAdminDogs() {
         return;
     }
     try {
-        const resp = await fetch(`${API_BASE_URL}/usuarios/${currentUserId}/cachorros`);
+        const resp = await fetch(`${API_BASE_URL}/usuarios/${currentUserId}/cachorros`, {
+            headers: authHeaders()
+        });
         if (!resp.ok) throw new Error('Falha ao buscar cachorros');
         const dogs = await resp.json();
         renderAdminDogsList(dogs);
@@ -447,7 +471,9 @@ function renderAdminDogsList(dogs) {
     panel.querySelectorAll('.admin-view-dog').forEach(btn => {
         btn.addEventListener('click', async (e) => {
             const id = e.currentTarget.getAttribute('data-id');
-            const resp = await fetch(`${API_BASE_URL}/cachorros/${id}`);
+            const resp = await fetch(`${API_BASE_URL}/cachorros/${id}`, {
+                headers: authHeaders()
+            });
             if (!resp.ok) { displayMessage(petMessage, 'Cachorro não encontrado.', 'error'); return; }
             const cachorro = await resp.json();
             populatePetForm(cachorro);
@@ -457,7 +483,9 @@ function renderAdminDogsList(dogs) {
     panel.querySelectorAll('.admin-edit-dog').forEach(btn => {
         btn.addEventListener('click', async (e) => {
             const id = e.currentTarget.getAttribute('data-id');
-            const resp = await fetch(`${API_BASE_URL}/cachorros/${id}`);
+            const resp = await fetch(`${API_BASE_URL}/cachorros/${id}`, {
+                headers: authHeaders()
+            });
             if (!resp.ok) { displayMessage(petMessage, 'Cachorro não encontrado.', 'error'); return; }
             const cachorro = await resp.json();
             populatePetForm(cachorro);
@@ -469,7 +497,10 @@ function renderAdminDogsList(dogs) {
         btn.addEventListener('click', async (e) => {
             const id = e.currentTarget.getAttribute('data-id');
             if (!confirm('Confirma a exclusão deste cachorro?')) return;
-            const resp = await fetch(`${API_BASE_URL}/cachorros/${id}`, { method: 'DELETE' });
+            const resp = await fetch(`${API_BASE_URL}/cachorros/${id}`, {
+                method: 'DELETE',
+                headers: authHeaders()
+            });
             if (!resp.ok) { displayMessage(petMessage, 'Falha ao deletar cachorro.', 'error'); return; }
             displayMessage(petMessage, 'Cachorro deletado com sucesso.', 'success');
             showAdminDogs();
@@ -520,7 +551,7 @@ function showPetAdminActions(cachorroId) {
         };
         const resp = await fetch(`${API_BASE_URL}/cachorros/${id}`, {
             method: 'PUT',
-            headers: {'Content-Type':'application/json'},
+            headers: authHeaders({'Content-Type':'application/json'}),
             body: JSON.stringify(payload)
         });
         if (!resp.ok) { displayMessage(petMessage, 'Falha ao atualizar pet.', 'error'); return; }
@@ -534,7 +565,10 @@ function showPetAdminActions(cachorroId) {
         e.preventDefault();
         const id = cachorroId || petForm.dataset.cachorroId;
         if (!confirm('Confirma a exclusão deste cachorro?')) return;
-        const resp = await fetch(`${API_BASE_URL}/cachorros/${id}`, { method: 'DELETE' });
+        const resp = await fetch(`${API_BASE_URL}/cachorros/${id}`, {
+            method: 'DELETE',
+            headers: authHeaders()
+        });
         if (!resp.ok) { displayMessage(petMessage, 'Falha ao deletar pet.', 'error'); return; }
         displayMessage(petMessage, 'Pet deletado com sucesso.', 'success');
         petForm.reset();
@@ -545,8 +579,14 @@ function showPetAdminActions(cachorroId) {
 // --- Admin de TUTORES ---
 
 async function showAdminUsers() {
+    if (!currentUserId) {
+        displayMessage(userMessage, 'Faça login para gerenciar seus dados.', 'error');
+        return;
+    }
     try {
-        const resp = await fetch(`${API_BASE_URL}/usuarios`);
+        const resp = await fetch(`${API_BASE_URL}/usuarios`, {
+            headers: authHeaders()
+        });
         if (!resp.ok) throw new Error('Falha ao buscar usuários');
         const users = await resp.json();
         renderAdminUsersList(users);
@@ -565,7 +605,7 @@ function renderAdminUsersList(users) {
     panel.innerHTML = '';
 
     const title = document.createElement('h4');
-    title.textContent = 'Gerenciar Tutores';
+    title.textContent = 'Gerenciar Meu Usuário';
     panel.appendChild(title);
 
     if (!users || users.length === 0) {
@@ -592,7 +632,9 @@ function renderAdminUsersList(users) {
     panel.querySelectorAll('.admin-view-user').forEach(btn => {
         btn.addEventListener('click', async (e) => {
             const id = e.currentTarget.getAttribute('data-id');
-            const resp = await fetch(`${API_BASE_URL}/usuarios/${id}`);
+            const resp = await fetch(`${API_BASE_URL}/usuarios/${id}`, {
+                headers: authHeaders()
+            });
             if (!resp.ok) { displayMessage(userMessage, 'Usuário não encontrado.', 'error'); return; }
             const user = await resp.json();
             populateUserForm(user);
@@ -602,7 +644,9 @@ function renderAdminUsersList(users) {
     panel.querySelectorAll('.admin-edit-user').forEach(btn => {
         btn.addEventListener('click', async (e) => {
             const id = e.currentTarget.getAttribute('data-id');
-            const resp = await fetch(`${API_BASE_URL}/usuarios/${id}`);
+            const resp = await fetch(`${API_BASE_URL}/usuarios/${id}`, {
+                headers: authHeaders()
+            });
             if (!resp.ok) { displayMessage(userMessage, 'Usuário não encontrado.', 'error'); return; }
             const user = await resp.json();
             populateUserForm(user);
@@ -613,7 +657,10 @@ function renderAdminUsersList(users) {
         btn.addEventListener('click', async (e) => {
             const id = e.currentTarget.getAttribute('data-id');
             if (!confirm('Confirma a exclusão deste usuário e seus cães?')) return;
-            const resp = await fetch(`${API_BASE_URL}/usuarios/${id}`, { method: 'DELETE' });
+            const resp = await fetch(`${API_BASE_URL}/usuarios/${id}`, {
+                method: 'DELETE',
+                headers: authHeaders()
+            });
             if (!resp.ok) { displayMessage(userMessage, 'Falha ao deletar usuário.', 'error'); return; }
             displayMessage(userMessage, 'Usuário deletado com sucesso.', 'success');
             showAdminUsers();
@@ -626,12 +673,15 @@ function populateUserForm(user) {
     console.debug('populateUserForm called for user id=', user.id);
     document.getElementById('nome-completo').value   = user.nome_completo || '';
     document.getElementById('email-usuario').value   = user.email || '';
+    document.getElementById('senha-usuario').value   = '';
     document.getElementById('telefone-usuario').value= user.telefone || '';
 
     currentUserId = user.id;
 
     userForm.querySelector('button[type="submit"]').style.display = 'none';
     userForm.querySelectorAll('input, select, textarea').forEach(el => el.disabled = true);
+    const senhaInput = document.getElementById('senha-usuario');
+    if (senhaInput) senhaInput.required = false;
     console.debug('populateUserForm: user form disabled after populate (for login-flow)');
     if (logoutButton) logoutButton.style.display = 'inline-block';
 }
@@ -654,14 +704,18 @@ function showUserAdminActions(userId) {
 
     document.getElementById('user-update-btn').addEventListener('click', async (e) => {
         e.preventDefault();
+        const senha = document.getElementById('senha-usuario').value.trim();
         const payload = {
             nome_completo: document.getElementById('nome-completo').value.trim(),
             email:        document.getElementById('email-usuario').value.trim(),
             telefone:     document.getElementById('telefone-usuario').value.trim()
         };
+        if (senha) {
+            payload.senha = senha;
+        }
         const resp = await fetch(`${API_BASE_URL}/usuarios/${userId}`, {
             method: 'PUT',
-            headers: {'Content-Type':'application/json'},
+            headers: authHeaders({'Content-Type':'application/json'}),
             body: JSON.stringify(payload)
         });
         if (!resp.ok) { displayMessage(userMessage, 'Falha ao atualizar tutor.', 'error'); return; }
@@ -674,7 +728,10 @@ function showUserAdminActions(userId) {
     document.getElementById('user-delete-btn').addEventListener('click', async (e) => {
         e.preventDefault();
         if (!confirm('Confirma a exclusão deste tutor e seus cães?')) return;
-        const resp = await fetch(`${API_BASE_URL}/usuarios/${userId}`, { method: 'DELETE' });
+        const resp = await fetch(`${API_BASE_URL}/usuarios/${userId}`, {
+            method: 'DELETE',
+            headers: authHeaders()
+        });
         if (!resp.ok) { displayMessage(userMessage, 'Falha ao deletar tutor.', 'error'); return; }
         displayMessage(userMessage, 'Tutor deletado com sucesso.', 'success');
         userForm.reset();

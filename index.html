@@ -41,11 +41,14 @@
             <div class="form-card user-form-card">
                 <h2>Suas Informações</h2>
                 <form id="user-form">
-                    <label for="nome-completo">Nome completo:</label>
-                    <input type="text" id="nome-completo" name="nome_completo" placeholder="João da Silva" required>
+                    <label for="nome-completo">Nome de Usuário:</label>
+                    <input type="text" id="nome-completo" name="nome_completo" placeholder="joaotutor" required>
 
                     <label for="email-usuario">E-mail:</label>
                     <input type="email" id="email-usuario" name="email" placeholder="joaodasilva@example.com" required>
+
+                    <label for="senha-usuario">Senha:</label>
+                    <input type="password" id="senha-usuario" name="senha" placeholder="Digite sua senha" required>
 
                     <label for="telefone-usuario">Telefone:</label>
                     <input type="tel" id="telefone-usuario" name="telefone" placeholder="(XX) XXXXX-XXXX">
@@ -53,7 +56,7 @@
                     <button type="submit">Verificar / Cadastrar</button>
                     <p id="user-message" class="message"></p>
                     <!-- Texto introdutório solicitado -->
-                    <p class="user-instruction">Bem-vindo tutor! Coloque seus dados: se você já for cadastrado, será feito o login; em seguida registre os dados do seu Doguinho 🐶. Se o nome, raça e idade já estiverem cadastrados, será considerado o login do seu pet.</p>
+                    <p class="user-instruction">Bem-vindo tutor! Seu <strong>nome de usuário</strong>, <strong>e-mail</strong> e <strong>senha</strong> serão usados para autenticação. Se você já for cadastrado, faremos login; caso contrário, criaremos seu cadastro. Em seguida, registre os dados do seu Doguinho 🐶.</p>
                     <!-- Botão de logout (esconde dados e reseta formulários) -->
                     <button type="button" id="logout-button" class="logout-btn" style="display:none; margin-top:8px;">Sair / Logout</button>
                 </form>
@@ -63,8 +66,8 @@
                 <div class="user-admin-area" style="margin-top:18px;">
     				<h3 style="margin-bottom:8px;">Gerenciar Tutores</h3>
     				<p style="font-size:0.9em; margin-bottom:10px;">
-      				  Clique em "Tutores - Adm" para listar todos os tutores cadastrados.
-      				  Use os botões Visualizar, Editar e Deletar logo abaixo.
+          		  Clique em "Tutores - Adm" para abrir somente os seus dados de usuário.
+              		Para editar, use "Visualizar/Editar" e ajuste os campos no formulário acima.
    					 </p>
 
    						 <div class="admin-buttons">
