@@ -33,6 +33,7 @@ Este é um projeto Full Stack desenvolvido como uma Single Page Application (SPA
 
 [ Link: O Wireframe gráfico similar -primeiro protótipo- a página](https://github.com/user-attachments/assets/222aa8f9-9262-4d1f-ad27-a35acae0f414)
 
+
 ## Backend: https://github.com/Elainecbr/pet-web-backend
 
     Python3
@@ -54,6 +55,7 @@ Este é um projeto Full Stack desenvolvido como uma Single Page Application (SPA
 # Frontend — Projeto Pet Web
 <img width="1723" height="987" alt="image" src="https://github.com/user-attachments/assets/d25366ff-f1bf-4d46-a66b-9fd7a44722d0" />
 
+<img width="1431" height="564" alt="grafik" src="https://github.com/user-attachments/assets/f8333dd5-701e-4608-9837-eae346f3a8ba" />
 
 
 **⚠️ IMPORTANTE:** Após clonar os dois repositórios (pet-web-backend e pet-web-frontend), renomeie as pastas para "backend" e "frontend" respectivamente, pois o backend serve tanto a API quanto o frontend na porta 5000, e o código busca a pasta frontend um nível acima do backend (../frontend). A linha de código responsável está em `app.py` linha 384:
